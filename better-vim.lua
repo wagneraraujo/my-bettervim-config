@@ -17,6 +17,7 @@ return {
 		},
 	},
 	bufferline = {
+		diagnostics = "nvim_lsp"
 
 
 	},
