@@ -1,12 +1,20 @@
 vim.cmd([[
 set clipboard+=unnamedplus
+autocmd BufWritePre <buffer> lua vim.lsp.buf.format()
+
+autocmd TermEnter term://*toggleterm#*
+      \ tnoremap <silent><c-t> <Cmd>exe v:count1 . "ToggleTerm"<CR>
+nnoremap <silent><c-t> <Cmd>exe v:count1 . "ToggleTerm"<CR>
+inoremap <silent><c-t> <Esc><Cmd>exe v:count1 . "ToggleTerm"<CR>
 ]])
+
 
 require("better-vim.plugins-configs");
 return {
 	theme = {
 		name = "catppuccin",
 		flavours = "mocha",
+		lazy = false,
 	},
 
 	mappings = {
@@ -14,14 +22,43 @@ return {
 			["<c-m>"] = { "<cmd>NvimTreeFocus<cr>", "Open file explorer", noremap = true },
 			["<c-Left>"] = { "<cmd>BufferLineCyclePrev<cr>", "Open file explorer", noremap = true },
 			["<c-Right>"] = { "<cmd>BufferLineCycleNext<cr>", "Open file explorer", noremap = true },
+			["<leader>hp"] = { "<cmd>Gitsigns preview_hunk<cr>", "Preview Hunk", noremap = true },
+			["<leader>tb"] = { "<cmd>Gitsigns toggle_current_line_blame<cr>", "Blame Line", noremap = true },
 		},
 	},
 	bufferline = {
 		diagnostics = "nvim_lsp"
-
-
+	},
+	gitsigns = {
+		numhl = true,
+	},
+	nvimtree = {
+	},
+	lsps = {
+		tsserver = {
+			on_attach = function(client, bufnr)
+				require "twoslash-queries".on_attach(client, bufnr)
+			end,
+		},
 	},
 	plugins = {
+		{
+			"akinsho/toggleterm.nvim",
+			tag = '*',
+			config = function()
+				require("toggleterm").setup({
+					open_mapping = [[<c-\>]],
+				})
+			end
+		},
+		{ "p00f/nvim-ts-rainbow" },
+		{
+			"akinsho/toggleterm.nvim",
+			tag = "*",
+			config = function()
+				require("toggleterm").setup()
+			end,
+		},
 		{
 			"chentoast/marks.nvim",
 			config = function()
@@ -86,21 +123,26 @@ return {
 				})
 			end
 		},
--- 		vim.keymap.set('n', 'zR', require('ufo').openAllFolds)
--- vim.keymap.set('n', 'zM', require('ufo').closeAllFolds)
-		{"kevinhwang91/nvim-ufo", dependencies = 'kevinhwang91/promise-async',
+		-- 		vim.keymap.set('n', 'zR', require('ufo').openAllFolds)
+		-- vim.keymap.set('n', 'zM', require('ufo').closeAllFolds)
+		{
+			"kevinhwang91/nvim-ufo",
+			dependencies = 'kevinhwang91/promise-async',
 			config = function()
-				require("ufo").setup{{
+				require("ufo").setup { {
 					mappings = {
-					["zR"] = {
+						["zR"] = {
 							"<cmd>require('ufo').openAllFolds()<cr>"
 						},
-					["zM"] = {
+						["zM"] = {
 							"<cmd>require('ufo').closeAllFolds()<cr>"
 						}
 					}
-				}}
+				} }
 			end,
+		},
+		{
+			"tpope/vim-fugitive"
 		},
 
 	},

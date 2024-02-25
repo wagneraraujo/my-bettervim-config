@@ -1,7 +1,12 @@
-
-vim.o.foldcolumn = '1' -- '0' is not bad
-vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
+vim.o.foldcolumn = '1'
+vim.o.foldlevel = 99
 vim.o.foldlevelstart = 99
 vim.o.foldenable = true
 
--- Using ufo provider need remap `zR` and `zM`. If Neovim is 0.6.1, remap yourself
+vim.api.nvim_create_autocmd('BufWritePre', {
+	callback = function()
+		vim.lsp.buf.format {
+			async = false,
+		}
+	end,
+})
